@@ -35,43 +35,43 @@ A rendszer 6 fő komponensből áll:
 ```mermaid
 flowchart TD
     Start([Start: repo megadása]) --> CheckArch{architektura.md\nlétezik?}
-    
+
     CheckArch -- Nem --> Pass0[Pass0: Architektúra-generálás]
-    CheckArch -- Igen --> Pass1
-    
+    CheckArch -- Igen --> Pass1[Pass1: Indexelés]
+
     Pass0 --> Pass0Check{architektura.md\nkész?}
     Pass0Check -- Nem --> Pass0Read[Fájlrendszer feltérképezés\nBatch 1-3 beolvasás]
     Pass0Read --> Pass0Gen[Architektúra.md előállítása\nMermaid diagrammal]
     Pass0Gen --> Pass0Check
-    
-    Pass0Check -- Igen --> Pass1[Pass1: Indexelés]
-    
+
+    Pass0Check -- Igen --> Pass1
+
     Pass1 --> Pass1Inventory[Könyvtárstruktúra feltérképezése]
     Pass1Inventory --> Pass1Read[Batch 1-4 forrásfájlok\nbeolvasása]
-    Pass1Read --> Pass1Analyze[Funkciók azonosítása\n üzleti szinten]
-    Pass1Analyze --> Pass1Output[00_funkcio_index.md +\nworkflow_state.json létrehozása]
-    
+    Pass1Read --> Pass1Analyze[Funkciók azonosítása\nüzleti szinten]
+    Pass1Analyze --> Pass1Output[00_funkcio_index.md és\nworkflow_state.json létrehozása]
+
     Pass1Output --> Loop{Queue van még\nfeldolgozatlan funkció?}
-    
+
     Loop -- Igen --> SelectFunc[Következő funkció kiválasztása\nworkflow_state.json alapján\nlegkisebb priority]
     SelectFunc --> SetInProg[Státusz: in_progress]
-    
+
     SetInProg --> Pass2[Pass2: Bizonyíték-kinyerés]
-    Pass2 --> Pass2Output[01_bizonyitek_<slug>.md létrehozása\nUI, adatbázis, validáció részletek]
-    
+    Pass2 --> Pass2Output[01_bizonyitek_slug.md létrehozása\nUI, adatbázis, validáció részletek]
+
     Pass2Output --> Pass3[Pass3: Specifikáció írás]
-    Pass3 --> Pass3Output[02_spec_<slug>.md létrehozása\n24 fejezetes végleges spec]\nMermaid diagramok kötelező]
-    
+    Pass3 --> Pass3Output[02_spec_slug.md létrehozása\n24 fejezetes végleges spec\nMermaid diagramok kötelező]
+
     Pass3Output --> Pass4[Pass4: Hiányaudit]
     Pass4 --> Pass4Check[01 vs 02 összehasonlítása\nhiányok feltárása]
     Pass4Check --> Pass4Fix[Hiányok pótlása a specifikációban\nMermaid diagram audit]
-    Pass4Fix --> Pass4Output[03_gap_audit_<slug>.md létrehozása]
-    
+    Pass4Fix --> Pass4Output[03_gap_audit_slug.md létrehozása]
+
     Pass4Output --> SetDone[Funkció státusza: done]
     SetDone --> Loop
-    
+
     Loop -- Nem --> Final{Minden funkció\nkész?}
-    
+
     Final -- Igen --> MergeSpec[Végső specifikáció összefűzése\n04_final_functional_spec.md]
     MergeSpec --> End([Vég])
 ```
